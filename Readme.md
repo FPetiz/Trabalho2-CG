@@ -37,11 +37,7 @@ Este projeto implementa uma cena de campo de futebol dinâmica utilizando a téc
 
     * Você pode usar o Visual Studio Code.
 
-3.  **Ajuste as variáveis `iResolution` e `iMouse` conforme necessário.**
-
-    * Essas variáveis controlam a resolução da tela e a posição do mouse, respectivamente.
-
-4.  **Para visualizar o shader.**
+3.  **Para visualizar o shader.**
 
     * No caso do VSCode:
     1. Clique com o botão direito em qualquer parte do código;
