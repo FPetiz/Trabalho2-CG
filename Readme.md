@@ -20,7 +20,7 @@ Este projeto implementa uma cena de campo de futebol dinâmica utilizando a téc
 * Texturas:
     * `Grass004_1K-JPG_Color.jpg`
     * `Metal014_1K-JPG_Color.jpg`
-    * `Leather030.png`
+    * `Leather030_1K-JPG_Color.jpg`
     * As texturas foram tiradas deste site: [https://ambientcg.com/](https://ambientcg.com/).
 
 ## Como Usar
