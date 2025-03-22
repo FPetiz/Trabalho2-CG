@@ -41,10 +41,12 @@ Este projeto implementa uma cena de campo de futebol dinâmica utilizando a téc
 
     * Essas variáveis controlam a resolução da tela e a posição do mouse, respectivamente.
 
-4.  **Compile e execute o shader.**
+4.  **Para visualizar o shader.**
 
-    * O processo de compilação e execução dependerá do ambiente que você está usando.
+    * No caso do VSCode:
+    1. Clique com o botão direito em qualquer parte do código;
+    2. Clique em "Shader Toy: Show GLSL Preview".
 
 ## Autora
 
-* \[Fernanda Cardoso Petiz]
+* Fernanda Cardoso Petiz
