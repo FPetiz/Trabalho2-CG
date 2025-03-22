@@ -30,7 +30,7 @@ Este projeto implementa uma cena de campo de futebol dinâmica utilizando a téc
     * Se você tiver o Git instalado, clone o repositório para o seu computador usando o seguinte comando:
 
         ```bash
-        git clone [https://github.com/FPetiz/Trabalho2-CG.git](https://github.com/FPetiz/Trabalho2-CG.git)
+        git clone https://github.com/FPetiz/Trabalho2-CG.git
         ```
 
 2.  **Abra o shader em um ambiente que suporte GLSL.**

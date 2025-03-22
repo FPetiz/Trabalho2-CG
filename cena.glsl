@@ -3,7 +3,7 @@
 // Definição de texturas
 #iChannel0 "file://./Texturas/Grass/Grass004_1K-JPG_Color.jpg"
 #iChannel1 "file://./Texturas/Metal/Metal014_1K-JPG_Color.jpg"
-#iChannel2 "file://./Texturas/Leather/Leather030.png"
+#iChannel2 "file://./Texturas/Leather/Leather030_1K-JPG_Color.jpg"
 
 // Controla o tempo de animação, tem um canal para cada textura
 uniform float     iChannelTime[4];       // Tempo da unidade de canal
@@ -99,12 +99,14 @@ float SDFfieldLine(vec3 p, float lineWidth) {
     vec3 fieldPos = p;
     fieldPos.y -= 0.1; // Move to the top of the support
     
-    //vec3 supportSize = vec3(1.5, .1, 3.0); // Defina o tamanho do suporte
-
-    // Field dimensions (based on the support size)
     float fieldLength = 3.0 - 0.1; // z-axis
     float fieldWidth = 1.5 - 0.1;  // x-axis
         
+    // Restrição para manter as linhas dentro do campo
+    if (abs(fieldPos.x) > fieldWidth || abs(fieldPos.z) > fieldLength) {
+        return 1.0; // Retorna uma grande distância para que não seja renderizado
+    }
+
     // Center field line
     float centerLine = abs(fieldPos.z) - lineWidth;
     
@@ -129,7 +131,6 @@ float SDFfieldLine(vec3 p, float lineWidth) {
     // Combine all lines
     float fieldLines = min(min(centerLine, outerBoundary), min(goalAreas, centerCircle));
     
-    // Only draw lines on the surface of the support
     return max(fieldLines, abs(fieldPos.y) - 0.01);
 }
 
@@ -336,8 +337,8 @@ vec3 Render(inout vec3 ro, inout vec3 rd, inout vec3 ref, bool last) {
     vec3 sunDir = normalize(sunPos);
     vec3 sunColor = getSunColor(sunPos);
 
-    float horizonFactor = smoothstep(-0.2, 0.5, rd.y);
-    vec3 skyColor = mix(vec3(1.0, 0.5, 0.2), vec3(0.1, 0.2, 0.4), horizonFactor);
+    // Sky color gradient
+    vec3 skyColor = mix(vec3(0.3, 0.5, 0.9), vec3(0.1, 0.2, 0.4), 0.5 + 0.5 * rd.y);
     vec3 col = skyColor;
     
     col += getSunAtmosphere(rd, sunDir);
@@ -398,8 +399,6 @@ vec3 Render(inout vec3 ro, inout vec3 rd, inout vec3 ref, bool last) {
         vec3 diffuse = sunColor * diff * directionalStrength * shadow;
         
         vec3 viewDir = normalize(ro - p);
-        float spec = microfacetBRDF(n, viewDir, sunDir, roughness);
-        vec3 specular = sunColor * spec * specularStrength * shadow;
         
         float skyLight = 0.5 + 0.5 * n.y;
         vec3 skyDiffuse = skyColor * skyLight * 0.2;
@@ -410,7 +409,7 @@ vec3 Render(inout vec3 ro, inout vec3 rd, inout vec3 ref, bool last) {
         vec3 lighting = ambient + diffuse + skyDiffuse + groundDiffuse;
         
         // Calcula a cor final com base na iluminação e no material
-        col = albedo * lighting + specular;
+        col = albedo * lighting -.01; 
         
         if (roughness < 0.5) {
             // Ajusta o raio para permitir múltiplas reflexões
@@ -434,9 +433,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // Definir m com base na posição do mouse
     vec2 m = iMouse.xy / iResolution.xy;
-    if (iMouse.z <= 0.0) { // Default camera angle if mouse is not being used
-        m = vec2(0.5, 0.2);
-    }
 
     // Inicializa a posição da câmera e o vetor de direção
     vec3 ro = vec3(0, 3, -7);
