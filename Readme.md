@@ -14,12 +14,14 @@ Este projeto implementa uma cena de campo de futebol dinâmica utilizando a téc
 
 ## Dependências
 
-* Um ambiente que suporte shaders GLSL, como VSCode com as extensões "Shader Toy" e "Shader languages support for VS Code".
+* Um ambiente que suporte shaders GLSL, como VSCode, para isso serão necessárias as seguintes extensões:
+    * Shader Toy 
+    * Shader languages support for VS Code
 * Texturas:
     * `Grass004_1K-JPG_Color.jpg`
     * `Metal014_1K-JPG_Color.jpg`
     * `Leather030.png`
-    * As texturas foram tiradas deste site: https://ambientcg.com/.
+    * As texturas foram tiradas deste site: [https://ambientcg.com/](https://ambientcg.com/).
 
 ## Como Usar
 
