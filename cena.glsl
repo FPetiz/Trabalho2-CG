@@ -95,9 +95,8 @@ vec2 SDFball(vec3 pos, float a) {
     deve ser desenhada.
     ============================================    */
 float SDFfieldLine(vec3 p, float lineWidth) {
-    // Move point to support surface
     vec3 fieldPos = p;
-    fieldPos.y -= 0.1; // Move to the top of the support
+    fieldPos.y -= 0.1; 
     
     float fieldLength = 3.0 - 0.1; // z-axis
     float fieldWidth = 1.5 - 0.1;  // x-axis
@@ -107,15 +106,12 @@ float SDFfieldLine(vec3 p, float lineWidth) {
         return 1.0; // Retorna uma grande distância para que não seja renderizado
     }
 
-    // Center field line
     float centerLine = abs(fieldPos.z) - lineWidth;
     
-    // Outer boundary
     float outerBoundaryX = abs(abs(fieldPos.x) - fieldWidth) - lineWidth;
     float outerBoundaryZ = abs(abs(fieldPos.z) - fieldLength) - lineWidth;
     float outerBoundary = min(outerBoundaryX, outerBoundaryZ);
-    
-    // Goal areas
+
     float goalAreaWidth = 0.4;
     float goalAreaLength = 0.5;
     float goalAreaX = abs(abs(fieldPos.x) - goalAreaWidth) - lineWidth;
@@ -124,11 +120,9 @@ float SDFfieldLine(vec3 p, float lineWidth) {
     float goalAreaPos = max(goalAreaX, goalAreaZPos);
     float goalAreaNeg = max(goalAreaX, goalAreaZNeg);
     float goalAreas = min(goalAreaPos, goalAreaNeg);
-    
-    // Center circle
+
     float centerCircle = abs(length(vec2(fieldPos.x, fieldPos.z)) - 0.3) - lineWidth;
     
-    // Combine all lines
     float fieldLines = min(min(centerLine, outerBoundary), min(goalAreas, centerCircle));
     
     return max(fieldLines, abs(fieldPos.y) - 0.01);
@@ -155,7 +149,6 @@ vec2 GetDist(vec3 pos) {
     vec2 ball = ball1;
     float fieldLines = SDFfieldLine(pos, 0.02);
     
-    // Compare all distances to find the minimum
     float dist = min(min(min(support, bar), ball.x), fieldLines);
     int mat = 0;
     
@@ -290,13 +283,11 @@ float microfacetBRDF(vec3 normal, vec3 viewDir, vec3 lightDir, float roughness) 
     float NdotH = max(dot(normal, h), 0.0);
     float NdotL = max(dot(normal, lightDir), 0.0);
     float NdotV = max(dot(normal, viewDir), 0.0);
-    
-    // D term (Beckmann distribution)
+
     float alpha = roughness * roughness;
     float NdotH2 = NdotH * NdotH;
     float D = exp((NdotH2 - 1.0) / (alpha * NdotH2)) / (3.14159265 * alpha * NdotH2 * NdotH2);
-    
-    // Simplified G and F terms
+
     float G = min(1.0, min(2.0 * NdotH * NdotV / dot(h, viewDir), 2.0 * NdotH * NdotL / dot(h, lightDir)));
     float F = 0.04 + 0.96 * pow(1.0 - dot(h, viewDir), 5.0);
     
@@ -337,7 +328,6 @@ vec3 Render(inout vec3 ro, inout vec3 rd, inout vec3 ref, bool last) {
     vec3 sunDir = normalize(sunPos);
     vec3 sunColor = getSunColor(sunPos);
 
-    // Sky color gradient
     vec3 skyColor = mix(vec3(0.3, 0.5, 0.9), vec3(0.1, 0.2, 0.4), 0.5 + 0.5 * rd.y);
     vec3 col = skyColor;
     
@@ -428,13 +418,10 @@ vec3 Render(inout vec3 ro, inout vec3 rd, inout vec3 ref, bool last) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    // Corrige a resolução
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
 
-    // Definir m com base na posição do mouse
     vec2 m = iMouse.xy / iResolution.xy;
 
-    // Inicializa a posição da câmera e o vetor de direção
     vec3 ro = vec3(0, 3, -7);
 
     ro.yz *= Rot(-m.y * 3.14 + 1.);
@@ -443,11 +430,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec3 rd = GetRayDir(uv, ro, vec3(0, 0.75, 0), 1.6);
     vec3 ref = vec3(1.);
 
-    // Chama a função Render
     vec3 col = Render(ro, rd, ref, false);
-
-    // Número de reflexões
-    int NB_BOUNCE = 1; // Reduced to 1 for better performance and fewer artifacts
+    
+    int NB_BOUNCE = 1; // Número de reflexões
 
     // Reflexão adicional
     for (int i = 0; i < NB_BOUNCE; i++) {
@@ -455,13 +440,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         col += ref1 * Render(ro, rd, ref, i + 1 == NB_BOUNCE);
     }
 
-    // Apply tone mapping for better dynamic range
-    col = col / (col + vec3(1.0)); // Reinhard tone mapping
-    
-    // Aplica uma transformação de cor
-    col = pow(col, vec3(0.4545));
-    
-    // Add slight vignette effect
+    col = col / (col + vec3(1.0));     
+    col = pow(col, vec3(0.4545)); // Transformação de cor
+
     vec2 center = fragCoord / iResolution.xy - 0.5;
     float vignette = 1.0 - dot(center, center) * 0.5;
     col *= vignette;
